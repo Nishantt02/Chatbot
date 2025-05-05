@@ -1,17 +1,23 @@
-import { createTransport } from "nodemailer"
+import { createTransport } from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 
-const SendMail= async(email,subject,otp)=>{
-    const transport=createTransport({
-       host:"smtp.gmail.com",
-       port:485,
-       auth:{
-        user:process.env.EMAIL,
-        password:process.env.PASSWORD
-       },
-       secure:true 
-    })
+console.log("CLEANED EMAIL:", `"${process.env.Gmail}"`);
 
-    const html = `<!DOCTYPE html>
+
+const sendMail = async (email, subject, otp) => {
+  const transport = createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.Gmail.trim(),
+      pass: process.env.PASSWORD.trim(),
+    
+    },
+  });
+
+  const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -56,13 +62,14 @@ const SendMail= async(email,subject,otp)=>{
     </div>
 </body>
 </html>
-`
-await transport.sendMail({
-    from:process.env.email,
-    to:email,
-    subject,
-    html
-})
-}
+`;
 
-export default SendMail
+  await transport.sendMail({
+    from: process.env.Gmail,
+    to: email,
+    subject,
+    html,
+  });
+};
+
+export default sendMail;
