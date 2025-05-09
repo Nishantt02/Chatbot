@@ -9,7 +9,7 @@ const isAuth = async (req, res, next) => {
         .status(400)
         .json({ message: "provide the token ", success: false });
     }
-    const decode = jwt.verify(token, process.env.jwt_secret);
+    const decode = jwt.verify(token, process.env.JWT_KEY);
     if (!decode) {
       return res.status(400).json({ message: "Invalid Token", success: false });
     }
