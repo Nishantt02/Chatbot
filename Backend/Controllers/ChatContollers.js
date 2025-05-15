@@ -1,4 +1,5 @@
 import Chat from "../Models/Chat.js";
+import mongoose from "mongoose";
 import Conversation from "../Models/Conversation.js";
 
 
@@ -22,13 +23,14 @@ const createChat = async (req, res) => {
 };
 
 // to get all the chats of the user
-const getallchat = async (req, res) => {
+const getallchat = async (req,res) => {
   try {
     // this is used to get all the chats of the user and sort them in descending order
     // of createdAt field and populate the user field with email field of user model
     const chats = await Chat.find({ user: req.user._id })
       .sort({ createdAt: -1 })
-      .populate("user", "email"); // populate user field with email
+      .populate("user", "email");
+       // populate user field with email
     res.status(200).json({
       message: "All Chats",
       chats,
@@ -60,14 +62,22 @@ const addconversation = async (req,res) => {
 
     // ✅ Create the conversation
     const conversation = await Conversation.create({
-      chat: chat._id,
+      // chat: chatId,
+      chat: new mongoose.Types.ObjectId(chatId),
+
       question,
       answer
     });
 
     // ✅ Update the latest message on the chat
     chat.latestMessage = question;
-    const updatedChat = await chat.save();
+    // const updatedChat = await chat.save();
+
+    const updatedChat = await Chat.findByIdAndUpdate(
+      chatId,
+      { latestMessage: req.body.question },
+      { new: true }
+    );
 
     res.status(200).json({
       message: "Conversation added successfully",
@@ -80,5 +90,61 @@ const addconversation = async (req,res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// this is used to get the conversation of the chat
+const getconverstion = async (req,res) => {
+  try {
+    const chatId = req.params.id.trim();
 
-export { createChat, getallchat,addconversation };
+    const conversation = await Conversation.find({ chat: chatId });
+
+    if (!conversation || conversation.length === 0) {
+      return res.status(404).json({ message: "No conversation found here" });
+    }
+
+    res.status(200).json({
+      message: "All Conversations",
+      success: true,
+      conversation
+    });
+
+  } catch (error) {
+    console.error("Error in getconverstion:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// this is used to delete the chat
+const deletechat = async (req, res) => {
+  try {
+    const chatId = req.params.id?.trim();
+
+    
+    // ✅ Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(chatId)) {
+      return res.status(400).json({ message: "Invalid chat ID" });
+    }
+
+    const chat = await Chat.findById(chatId);
+
+    if (!chat) {
+      return res.status(404).json({ message: "No chat found here to delete" });
+    }
+
+    // ✅ Check if the logged-in user owns the chat
+    if (chat.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "You are not authorized to delete this chat" });
+    }
+
+    // ✅ Delete the chat
+    await chat.deleteOne();
+
+    res.status(200).json({ message: "Chat deleted successfully" });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+export { createChat, getallchat,addconversation,getconverstion,deletechat };

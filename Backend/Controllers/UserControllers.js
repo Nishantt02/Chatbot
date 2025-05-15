@@ -18,7 +18,7 @@ const Loginuser = async (req, res) => {
     const VerifyToken = await Jwt.sign(
       { otp, userId: user._id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: "20m" }
+      { expiresIn: "50m" }
     );
 
     await SendMail(email, "OTP Verification", otp);
