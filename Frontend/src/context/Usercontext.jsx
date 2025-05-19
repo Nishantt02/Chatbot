@@ -1,15 +1,16 @@
 
-
 import { createContext, useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
-
+// create the context
+// This context will be used to provide user-related functions and state
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [btnloading, setbtnloading] = useState(false);
 
+//   This function handles user login by sending a POST request to the server with the user's email.
   async function loginuser(email, navigate) {
     setbtnloading(true);
     try {
@@ -29,10 +30,48 @@ export const UserProvider = ({ children }) => {
     }
   }
 
+
+
+  const[user,setUser]=useState(null)
+  const[isAuth,setisAuth]=useState(false)
+
+  async function verifyUser(otp, navigate) {
+  const token = localStorage.getItem("verifytoken");
+  setbtnloading(true);
+
+  if (!token) {
+    toast.error("Token not found");
+    setbtnloading(false);
+    return;
+  }
+
+  try {
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/User/verify`,
+      { otp,VerifyToken:token },
+     
+    );
+
+    console.log(data);
+    toast.success(data.message);
+    localStorage.removeItem("verifytoken");
+    localStorage.setItem("token", data.token);
+    navigate("/home");
+    setisAuth(true);
+    setUser(data.user);
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Verification failed");
+  } finally {
+    setbtnloading(false);
+  }
+}
+
   return (
-    <UserContext.Provider value={{ loginuser, btnloading }}>
+    // Provide the loginuser function and btnloading state to all components that consume this context
+    // This allows those components to access the loginuser function and the loading state both accessed from the context
+    <UserContext.Provider value={{ loginuser,verifyUser,setisAuth,user, btnloading }}>
       {children}
-      <Toaster />
+      <Toaster/>
     </UserContext.Provider>
   );
 };

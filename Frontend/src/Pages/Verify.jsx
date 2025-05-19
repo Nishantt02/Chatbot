@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
+import { Userdata } from '../context/Usercontext'
+import { useNavigate } from 'react-router-dom'
 
-const Verify = () => {
+const Verify= () => {
   const [otp, setotp] = useState("");
-  
+  // Removed invalid destructuring of verifyUser
+  const { verifyUser, btnloading } = Userdata(); // ✅ Fixed destructuring
+
+  const navigate=useNavigate()
   const submitHandler = (e) => {
     e.preventDefault();  // avoid reloading of page 
+    verifyUser(Number(otp), navigate); // ✅ Use correct casing
+
     console.log(otp);
   };
   return (
@@ -20,7 +27,7 @@ const Verify = () => {
                 OTP
           </label>
           <input
-            type="otp"
+            type="text"
             id="otp"
             value={otp}
             onChange={(e) => setotp(e.target.value)}
@@ -33,7 +40,8 @@ const Verify = () => {
           type="submit"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
         >
-          Login
+                    {btnloading ? "Please wait..." : "Submit"}
+
         </button>
       </form>
     </div>
@@ -41,3 +49,5 @@ const Verify = () => {
 }
 
 export default Verify
+
+

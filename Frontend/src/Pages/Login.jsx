@@ -5,12 +5,14 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setemail] = useState("");
+//   get the loginuser function and btnloading state from the Userdata context
+//   This allows us to use the loginuser function to handle user login and btnloading to manage loading state
   const { loginuser, btnloading } = Userdata(); // ✅ fixed destructuring
   const navigate = useNavigate();
 
   const submitHandler = (e) => {
     e.preventDefault(); // ✅ prevents reload
-    loginuser(email, navigate); // ✅ removed duplicate navigate
+    loginuser(email, navigate); 
   };
 
   return (
