@@ -30,12 +30,11 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-
-
   const[user,setUser]=useState(null)
   const[isAuth,setisAuth]=useState(false)
 
   async function verifyUser(otp, navigate) {
+    // get the token from userlogin
   const token = localStorage.getItem("verifytoken");
   setbtnloading(true);
 
@@ -55,6 +54,7 @@ export const UserProvider = ({ children }) => {
     console.log(data);
     toast.success(data.message);
     localStorage.removeItem("verifytoken");
+    // generate the new login token after otp verification
     localStorage.setItem("token", data.token);
     navigate("/home");
     setisAuth(true);
@@ -69,7 +69,7 @@ export const UserProvider = ({ children }) => {
   return (
     // Provide the loginuser function and btnloading state to all components that consume this context
     // This allows those components to access the loginuser function and the loading state both accessed from the context
-    <UserContext.Provider value={{ loginuser,verifyUser,setisAuth,user, btnloading }}>
+    <UserContext.Provider value={{loginuser,verifyUser,setisAuth,user,btnloading}}>
       {children}
       <Toaster/>
     </UserContext.Provider>
