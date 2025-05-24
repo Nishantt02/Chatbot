@@ -5,6 +5,6 @@ const router=express.Router();
 
 router.post('/login',Loginuser)
 router.post('/verify',verifyUser)
-router.post('/me',isAuth,Profile)
+router.get('/me',isAuth,Profile)
 
-export default router;
+export default router;  

@@ -69,6 +69,8 @@ const Profile=async(req,res)=>{
   try {
     const user=await User.findById(req.user._id)
     res.json({message:"User profile",success:true,user})
+        console.log("req.user from isAuth middleware:", req.user);
+
   } catch (error) {
     return res.status(500).json({ message: error.message, success: false });
   }

@@ -16,4 +16,4 @@ const connectdb=async(res,req)=>{
 
 export default connectdb
 
-// here is the code to connect to mongoose
+// // here is the code to connect to mongoose
