@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -30,7 +29,7 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  // ✅ Verify OTP and login
+  //  Verify OTP and login
   async function verifyUser(otp, navigate) {
     // fetch the login token to verify
     const token = localStorage.getItem("verifytoken");
@@ -49,13 +48,14 @@ export const UserProvider = ({ children }) => {
       );
 
       toast.success(data.message);
-      // remove the login token 
+      // remove the login token
       localStorage.removeItem("verifytoken");
       // geneate the new token of verify
       localStorage.setItem("token", data.token);
-      navigate("/home");
       setisAuth(true);
       setUser(data.user);
+      
+      navigate("/home")
     } catch (error) {
       toast.error(error.response?.data?.message || "Verification failed");
     } finally {
@@ -64,45 +64,48 @@ export const UserProvider = ({ children }) => {
   }
 
 
+   const [loading, setLoading] = useState(true);
   async function fetchUser() {
-  
-  const token = localStorage.getItem("token");
-   
-  if (!token) {
-    setisAuth(false)
-    
-    console.log(" No token found in localStorage");
-    return;
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setisAuth(false);
+
+      console.log(" No token found in localStorage");
+      return;
+    }
+
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/User/me`,
+        {
+          headers: {
+            token: token,
+          },
+        }
+      );
+
+      setisAuth(true);
+      setUser(data.user);
+      setLoading(false)
+    } catch (error) {
+      setisAuth(false);
+      console.error(
+        "❌ Fetch user error:",
+        error.response?.data || error.message
+      );
+      setUser(null);
+      setLoading(false)
+    }
   }
 
-  try {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}/User/me`,
-      {
-        headers: {
-           token: token,
-}
-      }
-    );
-
-    setisAuth(true);
-    setUser(data.user);
-  
-  } catch (error) {
-    setisAuth(false)
-    console.error("❌ Fetch user error:", error.response?.data || error.message);
-    setUser(null);
-    
-  }
-}
-
-useEffect(() => {
-  fetchUser()
-}, []);
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
     <UserContext.Provider
-      value={{ loginuser, verifyUser, setisAuth, user, btnloading }}
+      value={{ loginuser, verifyUser, setisAuth, user, btnloading,loading }}
     >
       {children}
       <Toaster />

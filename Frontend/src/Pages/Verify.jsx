@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router-dom'
 const Verify= () => {
   const [otp, setotp] = useState("");
   // Removed invalid destructuring of verifyUser
-  const { verifyUser, btnloading } = Userdata(); // ✅ Fixed destructuring
+  const { verifyUser, btnloading } = Userdata(); //  Fixed destructuring
 
   const navigate=useNavigate()
+  
   const submitHandler = (e) => {
     e.preventDefault();  // avoid reloading of page 
-    verifyUser(Number(otp), navigate); // ✅ Use correct casing
+    verifyUser(Number(otp), navigate); //  Use correct casing
 
-    console.log(otp);
   };
   return (
     <div className="flex justify-center items-center h-screen bg-black">
