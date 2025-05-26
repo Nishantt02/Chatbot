@@ -38,7 +38,7 @@ const Login = () => {
         </div>
 
         <button
-          type="submit" // ✅ restored
+          type="submit" //  restored
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
           disabled={btnloading}
         >

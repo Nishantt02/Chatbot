@@ -91,7 +91,7 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       setisAuth(false);
       console.error(
-        "❌ Fetch user error:",
+        " Fetch user error:",
         error.response?.data || error.message
       );
       setUser(null);

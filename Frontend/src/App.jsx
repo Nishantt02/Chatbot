@@ -4,7 +4,7 @@ import Login from './Pages/Login.jsx'
 import Verify from './Pages/Verify.jsx'
 import { Userdata } from "./context/Usercontext.jsx";
 import { LoadingBig } from "./Components/Loading.jsx";
-
+import './index.css';
 
 
 const App = () => {

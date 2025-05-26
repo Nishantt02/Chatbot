@@ -11,7 +11,7 @@ const Verify= () => {
   
   const submitHandler = (e) => {
     e.preventDefault();  // avoid reloading of page 
-    verifyUser(Number(otp), navigate); //  Use correct casing
+    verifyUser(Number(otp), navigate); 
 
   };
   return (
