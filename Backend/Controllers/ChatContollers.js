@@ -90,28 +90,41 @@ const addconversation = async (req,res) => {
     res.status(500).json({ message: error.message });
   }
 };
-// this is used to get the conversation of the chat
-const getconverstion = async (req,res) => {
+
+
+const getconverstion = async (req, res) => {
   try {
     const chatId = req.params.id.trim();
 
-    const conversation = await Conversation.find({ chat: chatId });
+    if (!mongoose.Types.ObjectId.isValid(chatId)) {
+      return res.status(400).json({ message: "Invalid Chat ID", success: false });
+    }
 
+    const conversation = await Conversation.find({
+      chat: new mongoose.Types.ObjectId(chatId)
+    }).populate('chat');
+
+    // FIX: Return empty array instead of 404
     if (!conversation || conversation.length === 0) {
-      return res.status(404).json({ message: "No conversation found here" });
+      return res.status(200).json({
+        message: "No conversation found here",
+        success: true,
+        conversation: [],
+      });
     }
 
     res.status(200).json({
       message: "All Conversations",
       success: true,
-      conversation
+      conversation,
     });
 
   } catch (error) {
     console.error("Error in getconverstion:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message, success: false });
   }
 };
+
 
 // this is used to delete the chat
 const deletechat = async (req, res) => {

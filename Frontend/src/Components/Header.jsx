@@ -1,8 +1,9 @@
 
 import React from "react";
+import { chatdata } from "../context/Chatcontext";
 
 const Header = () => {
-  const chats = []; // Keep this empty to see the message
+  const chats = chatdata()// Keep this empty to see the message
 
   return (
     <div>

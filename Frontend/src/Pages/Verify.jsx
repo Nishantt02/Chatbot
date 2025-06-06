@@ -1,17 +1,19 @@
 import React, { useState } from 'react'
 import { Userdata } from '../context/Usercontext'
 import { useNavigate } from 'react-router-dom'
+import { chatdata } from '../context/Chatcontext';
 
 const Verify= () => {
   const [otp, setotp] = useState("");
   // Removed invalid destructuring of verifyUser
   const { verifyUser, btnloading } = Userdata(); //  Fixed destructuring
+  const{fetchats}=chatdata()
 
   const navigate=useNavigate()
   
   const submitHandler = (e) => {
     e.preventDefault();  // avoid reloading of page 
-    verifyUser(Number(otp), navigate); 
+    verifyUser(Number(otp), navigate,fetchats); 
 
   };
   return (

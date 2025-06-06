@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-
 // Create the context
+
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -30,7 +30,7 @@ export const UserProvider = ({ children }) => {
   }
 
   //  Verify OTP and login
-  async function verifyUser(otp, navigate) {
+  async function verifyUser(otp, navigate,fetchats) {
     // fetch the login token to verify
     const token = localStorage.getItem("verifytoken");
     setbtnloading(true);
@@ -54,7 +54,7 @@ export const UserProvider = ({ children }) => {
       localStorage.setItem("token", data.token);
       setisAuth(true);
       setUser(data.user);
-      
+      fetchats()
       navigate("/home")
     } catch (error) {
       toast.error(error.response?.data?.message || "Verification failed");
@@ -65,47 +65,58 @@ export const UserProvider = ({ children }) => {
 
 
    const [loading, setLoading] = useState(true);
-  async function fetchUser() {
-    const token = localStorage.getItem("token");
+   async function fetchUser() {
+  const token = localStorage.getItem("token");
 
-    if (!token) {
-      setisAuth(false);
-
-      console.log(" No token found in localStorage");
-      return;
-    }
-
-    try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/User/me`,
-        {
-          headers: {
-            token: token,
-          },
-        }
-      );
-
-      setisAuth(true);
-      setUser(data.user);
-      setLoading(false)
-    } catch (error) {
-      setisAuth(false);
-      console.error(
-        " Fetch user error:",
-        error.response?.data || error.message
-      );
-      setUser(null);
-      setLoading(false)
-    }
+  if (!token) {
+    setisAuth(false);
+    setUser(null);
+    setLoading(false);
+    return;
   }
+
+  try {
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/User/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ recommended: use "Bearer"
+        },
+      }
+    );
+
+    setisAuth(true);
+    setUser(data.user);
+  } catch (error) {
+    setisAuth(false);
+    setUser(null);
+    console.error("Fetch user error:", error.response?.data || error.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
 
   useEffect(() => {
     fetchUser();
   }, []);
 
+  
+
+  async function logoutHandler(navigate) {
+    
+    localStorage.clear();
+
+    toast.success("logged out");
+    setisAuth(false);
+    setUser([]);
+    
+  } 
+  
+
   return (
     <UserContext.Provider
-      value={{ loginuser, verifyUser, setisAuth, user, btnloading,loading }}
+      value={{ loginuser, verifyUser, setisAuth, user, btnloading,loading,logoutHandler }}
     >
       {children}
       <Toaster />

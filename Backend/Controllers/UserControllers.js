@@ -53,7 +53,6 @@ const verifyUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid OTP", success: false });
     }
     
-
     // generate login token after OTP is verified
     const token = Jwt.sign({ _id: decoded.userId }, process.env.JWT_KEY, { expiresIn: "1d" });
 
