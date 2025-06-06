@@ -46,7 +46,7 @@ const getallchat = async (req,res) => {
 // and update the latest message of the chat
 const addconversation = async (req,res) => {
   try {
-    const chatId = req.params.id.trim(); // ✅ Trim to avoid ObjectId errors
+    const chatId = req.params.id.trim(); // Trim to avoid ObjectId errors
 
     const chat = await Chat.findById(chatId).populate('user', 'email');
     if (!chat) {
@@ -55,12 +55,12 @@ const addconversation = async (req,res) => {
 
     const { question, answer } = req.body;
 
-    // ✅ Validate required fields
+    //  Validate required fields
     if (!question || !answer) {
       return res.status(400).json({ message: "Question and answer are required" });
     }
 
-    // ✅ Create the conversation
+    //  Create the conversation
     const conversation = await Conversation.create({
       // chat: chatId,
       chat: new mongoose.Types.ObjectId(chatId),

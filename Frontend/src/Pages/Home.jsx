@@ -16,7 +16,7 @@ const Home = () => {
   };
 
   
-  const { fetchresponse, messages, prompt, setPrompt, newrequestloading,loading } = chatdata();
+  const { fetchresponse, messages, prompt, setPrompt, newrequestloading,loading,chats} = chatdata();
   // Reference to the message container for scrolling
   // This will ensure that the chat scrolls to the bottom when new messages are added
   const messagecontainerRef=useRef()
@@ -88,7 +88,8 @@ const Home = () => {
       </div>
 
       {/* Prompt Input Section */}
-      <div className="fixed bottom-0 right-0 left-auto p-4 bg-gray-900 w-full md:w-[75%]">
+      {
+        chats && chats.length===0? "" :<div className="fixed bottom-0 right-0 left-auto p-4 bg-gray-900 w-full md:w-[75%]">
         <form
           className="flex items-center justify-between bg-gray-800 rounded"
           onSubmit={(e) => {
@@ -112,6 +113,7 @@ const Home = () => {
           </button>
         </form>
       </div>
+      }
     </div>
   );
 };

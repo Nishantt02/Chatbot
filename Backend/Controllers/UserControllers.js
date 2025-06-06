@@ -6,8 +6,9 @@ import Jwt from "jsonwebtoken";
 const Loginuser = async (req, res) => {
   try {
     const { email } = req.body;
+    // check if user exists or not
     let user = await User.findOne({ email });
-
+    // if user does not exist, create a new user
     if (!user) {
       user = await User.create({ email });
     }

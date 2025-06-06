@@ -80,7 +80,7 @@ export const UserProvider = ({ children }) => {
       `${import.meta.env.VITE_BASE_URL}/User/me`,
       {
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ recommended: use "Bearer"
+          Authorization: `Bearer ${token}`, //  recommended: use "Bearer"
         },
       }
     );

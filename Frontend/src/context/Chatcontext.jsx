@@ -187,6 +187,7 @@ const deletechat = async (id) => {
 
     toast.success(data.message || "Chat deleted successfully");
     fetchats(); // Refresh chats after deletion
+    window.location.reload(); // Reload the page to reflect changes
   } catch (error) {
     console.error("Error deleting chat:", error);
 

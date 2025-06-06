@@ -23,6 +23,11 @@ const Sidebar = ({ isopen, toggleSlidebar }) => {
     navigate("/login");  // then navigate to login
   };
   
+  const clickevent=(id)=>{
+    setselected(id);
+    toggleSlidebar(); // Close the sidebar after selecting a chat
+  }
+
   return (
     <div
       className={`fixed inset-0 bg-gray-800 p-4 transition-transform transform 
@@ -35,7 +40,7 @@ const Sidebar = ({ isopen, toggleSlidebar }) => {
         className="md:hidden p-2 mb-4 bg-gray-700 rounded text-2xl"
         onClick={toggleSlidebar}
       >
-        <IoIosCloseCircle />
+        <IoIosCloseCircle />  
       </button>
 
       <div className="text-2xl font-semibold mb-6">Chatbot</div>
@@ -57,7 +62,7 @@ const Sidebar = ({ isopen, toggleSlidebar }) => {
               <button
                 key={e._id}
                 className="w-full text-left py-2 px-2 bg-gray-700 hover:bg-gray-600 rounded mt-2 flex justify-between items-center"
-                onClick={() =>setselected(e._id)}
+                onClick={() =>clickevent(e._id)}
               >
                 {/* first 38 character of latest msg */}
                 <span>{e.latestMessage.slice(0, 38)}...</span>
