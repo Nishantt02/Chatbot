@@ -9,6 +9,7 @@ const Loginuser = async (req, res) => {
     // check if user exists or not
     let user = await User.findOne({ email });
     // if user does not exist, create a new user
+    //create operation is used to create a new user in the database
     if (!user) {
       user = await User.create({ email });
     }
@@ -17,6 +18,7 @@ const Loginuser = async (req, res) => {
 
     // this is used to verify otp corrected or not 
     const VerifyToken = await Jwt.sign(
+      //token contain the information of otp, userId and email 
       { otp, userId: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: "50m" }
@@ -43,7 +45,7 @@ const verifyUser = async (req, res) => {
     if (!otp || !VerifyToken) {
       return res.status(400).json({ message: "Please provide all fields", success: false });
     }
-
+// it is used to verify the token 
     const decoded = Jwt.verify(VerifyToken, process.env.JWT_SECRET);
 
     if (!decoded) {
@@ -67,6 +69,7 @@ const verifyUser = async (req, res) => {
 
 const Profile=async(req,res)=>{
   try {
+    // it is used to find the user by its id 
     const user=await User.findById(req.user._id)
     res.json({message:"User profile",success:true,user})
         console.log("req.user from isAuth middleware:", req.user);

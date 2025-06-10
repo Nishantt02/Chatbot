@@ -8,13 +8,14 @@ const createChat = async (req, res) => {
   try {
     const userId = req.user._id;
 
+  // create the chat for the user by using the user id 
     const chat = await Chat.create({
       user: userId,
     });
 
     res.status(200).json({
-      message: "Chat Created Successfully",
-      success: true,
+      message:"Chat Created Successfully",
+      success:true,
       chat,
     });
   } catch (error) {
@@ -27,10 +28,11 @@ const getallchat = async (req,res) => {
   try {
     // this is used to get all the chats of the user and sort them in descending order
     // of createdAt field and populate the user field with email field of user model
-    const chats = await Chat.find({ user: req.user._id })
+    const chats = await Chat.find({ user:req.user._id })
       .sort({ createdAt: -1 })
+      // to get the user and email in the chat
       .populate("user", "email");
-       // populate user field with email
+      
     res.status(200).json({
       message: "All Chats",
       chats,
@@ -48,6 +50,7 @@ const addconversation = async (req,res) => {
   try {
     const chatId = req.params.id.trim(); // Trim to avoid ObjectId errors
 
+    // used to find the chat by its id and populate the user field with email
     const chat = await Chat.findById(chatId).populate('user', 'email');
     if (!chat) {
       return res.status(404).json({ message: "Chat not found" });
@@ -96,10 +99,12 @@ const getconverstion = async (req, res) => {
   try {
     const chatId = req.params.id.trim();
 
+    // Validate ObjectId
+    //  If the chatId is not a valid ObjectId, return a 400 error
     if (!mongoose.Types.ObjectId.isValid(chatId)) {
       return res.status(400).json({ message: "Invalid Chat ID", success: false });
     }
-
+// To find the conversation by its chat id and populate the chat field
     const conversation = await Conversation.find({
       chat: new mongoose.Types.ObjectId(chatId)
     }).populate('chat');
@@ -132,7 +137,7 @@ const deletechat = async (req, res) => {
     const chatId = req.params.id?.trim();
 
     
-    // ✅ Validate ObjectId
+    //  Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(chatId)) {
       return res.status(400).json({ message: "Invalid chat ID" });
     }
@@ -143,12 +148,12 @@ const deletechat = async (req, res) => {
       return res.status(404).json({ message: "No chat found here to delete" });
     }
 
-    // ✅ Check if the logged-in user owns the chat
+    // Check if the logged-in user owns the chat
     if (chat.user.toString() !== req.user._id.toString()) {
       return res.status(401).json({ message: "You are not authorized to delete this chat" });
     }
 
-    // ✅ Delete the chat
+    //  Delete the chat
     await chat.deleteOne();
 
     res.status(200).json({ message: "Chat deleted successfully" });
