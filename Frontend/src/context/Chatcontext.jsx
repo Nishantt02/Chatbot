@@ -8,7 +8,11 @@ const Chatcontext = createContext();
 
 // Provider component
 export const ChatProvider = ({ children }) => {
+  // for storing messages, prompt, and loading states
+  // messages: array of chat messages
   const [messages, setMessages] = useState([]);
+  // prompt will be empty initially and will be used to store user input
+  // setPrompt: function to update the prompt state
   const [prompt, setPrompt] = useState("");
   const [newrequestloading, setnewrequestLoading] = useState(false);
 
@@ -22,7 +26,7 @@ export const ChatProvider = ({ children }) => {
 
     try {
       const response = await axios({
-        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBi6tUP1IlLmVYumVOck3YE-uLeHCxlxr4",
+        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBnU2aUf4uEmvPWqxfaarUSVGn8v3eDE2M",
         method: "POST",
         data: {
           contents: [{ parts: [{ text: userPrompt }] }],
@@ -68,6 +72,7 @@ if (!selected) {
 
 async function fetchats() {
   try {
+    // to get the token from local storage 
     const token = localStorage.getItem("token");
 
     // Check if token is valid before sending request
@@ -75,6 +80,7 @@ async function fetchats() {
       console.error("No token found");
       return;
     }
+
 
     const { data } = await axios.get(
       `${import.meta.env.VITE_BASE_URL}/Chat/getallchat`,
@@ -87,6 +93,7 @@ async function fetchats() {
 
     setchats(data.chats);
 
+    // select the first chat if none is selected
     if (data.chats.length > 0) {
       setselected(data.chats[0]._id);
     }

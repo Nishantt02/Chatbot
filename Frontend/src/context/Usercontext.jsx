@@ -1,37 +1,45 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-// Create the context
 
+// Create the context
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  // it is used for loading state of button
   const [btnloading, setbtnloading] = useState(false);
+  // it is used to store user data and authentication state
   const [user, setUser] = useState(null);
+  // it is used to store authentication state
+  // if user is authenticated or not
   const [isAuth, setisAuth] = useState(false);
 
   //  Login User
   async function loginuser(email, navigate) {
-    setbtnloading(true);
-    try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/User/login`,
-        { email }
-      );
-      toast.success(data.message);
-      // get the token of login
-      localStorage.setItem("verifytoken", data.VerifyToken);
-      navigate("/verify");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
-    } finally {
-      setbtnloading(false);
-    }
+  setbtnloading(true);
+  try {
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/User/login`,
+      { email }
+    );
+
+    toast.success(data.message);
+
+    // ❌ Do NOT use verifytoken for authenticated APIs
+    localStorage.setItem("verifytoken", data.VerifyToken);
+
+    // Navigate to OTP page
+    navigate("/verify");
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Login failed");
+  } finally {
+    setbtnloading(false);
   }
+}
 
   //  Verify OTP and login
   async function verifyUser(otp, navigate,fetchats) {
-    // fetch the login token to verify
+    // fetch the login token to verify 
     const token = localStorage.getItem("verifytoken");
     setbtnloading(true);
 
@@ -65,6 +73,7 @@ export const UserProvider = ({ children }) => {
 
 
    const [loading, setLoading] = useState(true);
+  //  it used to fetch the user data
    async function fetchUser() {
   const token = localStorage.getItem("token");
 
@@ -96,7 +105,7 @@ export const UserProvider = ({ children }) => {
   }
 }
 
-
+// it triggered when the component is mounted to fetch the user data
   useEffect(() => {
     fetchUser();
   }, []);

@@ -73,3 +73,5 @@ const sendMail = async (email, subject, otp) => {
 };
 
 export default sendMail;
+
+
