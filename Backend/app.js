@@ -9,7 +9,13 @@ const app = express();
 const __dirname = path.resolve();
 
 app.use(express.json());
-app.use(cors());
+
+const corsoption={
+    origin:"https://chatbot-3-zs91.onrender.com",
+    credentials:true
+}
+app.use(cors(corsoption))
+// app.use(cors());
 
 // API routes
 app.use('/User', router);

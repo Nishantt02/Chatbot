@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
   setbtnloading(true);
   try {
     const { data } = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/User/login`,
+      `$https://chatbot-3-zs91.onrender.com/User/login`,
       { email }
     );
 
@@ -51,7 +51,7 @@ export const UserProvider = ({ children }) => {
 
     try {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/User/verify`,
+        `$https://chatbot-3-zs91.onrender.com/User/verify`,
         { otp, VerifyToken: token }
       );
 
@@ -86,7 +86,7 @@ export const UserProvider = ({ children }) => {
 
   try {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}/User/me`,
+      `$https://chatbot-3-zs91.onrender.com/User/me`,
       {
         headers: {
           Authorization: `Bearer ${token}`, //  recommended: use "Bearer"
